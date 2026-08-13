@@ -2,6 +2,7 @@
 
 A Java/Maven scaffold for practicing Low-Level Design (LLD) interview questions
 by actually writing code, not just drawing diagrams.
+I have already written codes for all, you can remove them and try your own.
 
 ## How to use this
 
@@ -32,7 +33,7 @@ by actually writing code, not just drawing diagrams.
 7. `splitwise` — graph-ish balance simplification, harder domain modeling
 8. `elevator` — concurrency + scheduling strategy, a common "hard" LLD question
 9. `bookmyshow` — biggest one: booking/locking, concurrency, multiple actors
-
+10. `parkinglot`
 ## Running things
 
 Compile everything:
