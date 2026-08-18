@@ -1,15 +1,21 @@
 package lld.tictactoe;
 
 public class Player {
+    private final int id;
     private final String name;
-    private final char symbol;
+    private final Symbol symbol;
 
-    public Player(String name, char symbol) {
+    public Player(int id, String name, Symbol symbol) {
+        this.id = id;
         this.name = name;
         this.symbol = symbol;
     }
 
-    public char getSymbol() {
+    public int getId() {
+        return id;
+    }
+
+    public Symbol getSymbol() {
         return symbol;
     }
 
