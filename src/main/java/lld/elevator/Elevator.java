@@ -4,30 +4,125 @@ import java.util.TreeSet;
 
 public class Elevator {
     private final int id;
-    private int currentFloor;
-    private Direction direction;
-    private final TreeSet<Integer> upRequests = new TreeSet<>();
-    private final TreeSet<Integer> downRequests = new TreeSet<>();
+    private final int maxFloor;
 
-    public Elevator(int id, int startFloor) {
+    private int currentFloor;
+    private EnumDirection direction;
+    private EnumEelvatorMode mode;
+
+    private final TreeSet<Integer> upRequests;
+    private final TreeSet<Integer> downRequests;
+    
+    public Elevator(int id, int startingFloor, int maxFloor) {
         this.id = id;
-        this.currentFloor = startFloor;
-        this.direction = Direction.IDLE;
+        this.maxFloor = maxFloor;
+        this.currentFloor = startingFloor;
+        this.direction = EnumDirection.NONE;
+        this.mode = EnumEelvatorMode.IDLE;
+        this.upRequests = new TreeSet<>();
+        this.downRequests = new TreeSet<>();
     }
 
-    public void addRequest(int floor) {
-        // TODO: add to upRequests or downRequests based on floor vs currentFloor
-        throw new UnsupportedOperationException("not implemented");
+    public int getId() {
+        return id;
+    }
+    public int getCurrentFloor() {
+        return currentFloor;
+    }
+    public EnumDirection getDirection() {
+        return direction;
+    }
+    public EnumEelvatorMode getMode() {
+        return mode;
+    }
+
+    public void addFloorRequest(int floor) {
+        if(floor < 1 || floor > maxFloor) {
+            throw new IllegalArgumentException("Invalid floor number: " + floor);
+        }
+        if(floor==currentFloor) {
+            openDoor();
+            return;
+        }
+        if (floor > currentFloor) {
+            upRequests.add(floor);
+        } else if(floor < currentFloor) {
+            downRequests.add(floor);
+        }
+        if(direction == EnumDirection.NONE) {
+            direction = (floor > currentFloor) ? EnumDirection.UP : EnumDirection.DOWN;
+            mode = EnumEelvatorMode.MOVING;
+        }
     }
 
     public void step() {
-        // TODO: move one floor towards the next target following SCAN/LOOK
-        // (keep going in current direction until no more requests that way,
-        // then reverse), "open doors" when arriving at a requested floor.
-        throw new UnsupportedOperationException("not implemented");
+        if(mode == EnumEelvatorMode.EMERGENCY || mode == EnumEelvatorMode.MAINTENANCE) {
+            return;
+        }
+        if(direction == EnumDirection.NONE){
+            mode = EnumEelvatorMode.IDLE;
+            return;
+        }
+        mode = EnumEelvatorMode.MOVING;
+        if(direction == EnumDirection.UP){
+            moveUp();
+        }else if(direction == EnumDirection.DOWN){
+            moveDown();
+        }
     }
 
-    public int getCurrentFloor() {
-        return currentFloor;
+    private void moveUp() {
+        currentFloor++;
+        if(upRequests.contains(currentFloor)) {
+            upRequests.remove(currentFloor);
+            openDoor();
+        }
+        if(upRequests.isEmpty() && !downRequests.isEmpty()) {
+            direction = EnumDirection.DOWN;
+        } else if(upRequests.isEmpty() && downRequests.isEmpty()) {
+            direction = EnumDirection.NONE;
+            mode = EnumEelvatorMode.IDLE;
+        }
+    }
+
+    private void moveDown() {
+        currentFloor--;
+        if(downRequests.contains(currentFloor)) {
+            downRequests.remove(currentFloor);
+            openDoor();
+        }
+        if(downRequests.isEmpty() && !upRequests.isEmpty()) {
+            direction = EnumDirection.UP;
+        } else if(downRequests.isEmpty() && upRequests.isEmpty()) {
+            direction = EnumDirection.NONE;
+            mode = EnumEelvatorMode.IDLE;
+        }
+    }
+    private void openDoor(){
+        mode = EnumEelvatorMode.DOOR_OPEN;
+        System.out.println("Elevator " + id + " opening door at floor " + currentFloor);
+        closeDoor();
+    }
+    private void closeDoor(){
+        mode = EnumEelvatorMode.MOVING;
+    }
+    public void setMaintenance(boolean isMaintenance) {
+        if(isMaintenance) {
+            mode = EnumEelvatorMode.MAINTENANCE;
+            direction = EnumDirection.NONE;
+            upRequests.clear();
+            downRequests.clear();
+        } else {
+            mode = EnumEelvatorMode.IDLE;
+        }
+    }
+        @Override
+    public String toString() {
+        return "Elevator{" +
+                "id=" + id +
+                ", floor=" + currentFloor +
+                ", direction=" + direction +
+                ", mode=" + mode +
+                '}';
     }
 }

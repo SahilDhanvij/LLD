@@ -1,10 +1,10 @@
 package lld.elevator;
 
-public class Request {
+public class ElevatorRequest {
     private final int floor;
-    private final Direction direction; // null/IDLE for internal cabin requests
-
-    public Request(int floor, Direction direction) {
+    private final EnumDirection direction;
+    
+    public ElevatorRequest(int floor, EnumDirection direction) {
         this.floor = floor;
         this.direction = direction;
     }
@@ -13,7 +13,8 @@ public class Request {
         return floor;
     }
 
-    public Direction getDirection() {
+    public EnumDirection getDirection() {
         return direction;
     }
+    
 }
