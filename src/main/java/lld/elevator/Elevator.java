@@ -41,7 +41,7 @@ public class Elevator {
             throw new IllegalArgumentException("Invalid floor number: " + floor);
         }
         if(floor==currentFloor) {
-            openDoor();
+            openDoor();     
             return;
         }
         if (floor > currentFloor) {
